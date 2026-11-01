@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f172a, #1e293b);
+    color: #f8fafc;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+  }
+
+  .result-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 80px);
+    padding: 40px 20px;
+  }
+
+  .result-card {
+    background: rgba(30,41,59,0.9);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 40px;
+    color: #f8fafc;
+    width: 95%;
+    max-width: 850px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(147,197,253,0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* ✅ allows buttons & links to work */
+  }
+
+  .result-card:hover::before {
+    opacity: 1;
+  }
+
+  .result-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(37,99,235,0.3);
+  }
+
+  h3, h4, h5 {
+    text-align: center;
+    color: #60a5fa;
+    text-shadow: 0 0 8px rgba(96,165,250,0.3);
+  }
+
+  .stats {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .stats h4 {
+    color: #22c55e;
+    font-weight: 600;
+  }
+
+  .stats h5 {
+    color: #ef4444;
+  }
+
+  .review-card {
+    background: rgba(15,23,42,0.6);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(59,130,246,0.3);
+    transition: all 0.3s ease;
+  }
+
+  .review-card:hover {
+    background: rgba(37,99,235,0.15);
+    transform: translateY(-3px);
+  }
+
+  .review-card.correct {
+    border-left: 4px solid #22c55e;
+  }
+
+  .review-card.incorrect {
+    border-left: 4px solid #ef4444;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 10px;
+  }
+
+  li {
+    padding: 3px 0;
+    color: #cbd5e1;
+  }
+
+  li.correct {
+    color: #22c55e;
+    font-weight: 600;
+  }
+
+  li.wrong {
+    color: #ef4444;
+    font-weight: 500;
+  }
+
+  .btn-glow {
+    display: inline-block;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 500;
+    text-decoration: none;
+    margin: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(59,130,246,0.4);
+  }
+
+  .btn-glow:hover {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    box-shadow: 0 0 20px rgba(59,130,246,0.6);
+    transform: scale(1.05);
+  }
+
+  hr {
+    border-color: rgba(59,130,246,0.3);
+    margin: 25px 0;
+  }
+
+  .back-buttons {
+    text-align: center;
+    margin-top: 25px;
+  }
+</style>
+
+<div class="result-wrapper">
+  <div class="result-card">
+    <h3>Quiz Result</h3>
+
+    <div class="stats">
+      <h4>✅ Correct: {{ score }} / {{ total }}</h4>
+      <h5>❌ Wrong: {{ wrong }}</h5>
+    </div>
+
+    <hr>
+    <h5>Detailed Review</h5>
+
+    {% for r in results %}
+      <div class="review-card {% if r.is_correct %}correct{% else %}incorrect{% endif %}">
+        <p><strong>Q{{ loop.index }}:</strong> {{ r.question }}</p>
+        <ul>
+          {% for opt in r.options %}
+            <li
+              class="{% if opt == r.correct_answer %}correct{% elif opt == r.user_answer and not r.is_correct %}wrong{% endif %}">
+              {{ opt }}
+            </li>
+          {% endfor %}
+        </ul>
+        <p>
+          {% if r.is_correct %}
+            ✅ You answered correctly!
+          {% else %}
+            ❌ Your answer: <strong style="color:#ef4444;">{{ r.user_answer }}</strong><br>
+            ✅ Correct answer: <strong style="color:#22c55e;">{{ r.correct_answer }}</strong>
+          {% endif %}
+        </p>
+      </div>
+    {% endfor %}
+
+    <hr>
+
+    <div class="back-buttons">
+      <a href="{{ url_for('quiz_new') }}" class="btn-glow">🧩 Generate New Quiz</a>
+      <a href="{{ url_for('dashboard') }}" class="btn-glow">🏠 Back to Dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body { background: radial-gradient(circle at top left, #0f172a, #1e293b); color: #f8fafc; font-family: 'Poppins', sans-serif; }
+  .media-wrapper { display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 120px); }
+  .media-card {
+    background: rgba(30,41,59,0.95);
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%; max-width: 700px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    transition: all 0.3s ease;
+  }
+  .media-card:hover { box-shadow: 0 20px 40px rgba(59,130,246,0.3); transform: translateY(-5px); }
+  .form-control, .form-select { background: rgba(15,23,42,0.9); border: 1px solid #334155; color: #f1f5f9; border-radius: 10px; padding: 10px 12px; }
+  .btn-glow { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 10px 25px; border-radius: 12px; transition: all 0.3s ease; }
+  .btn-glow:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(59,130,246,0.6); }
+  .summary-box { margin-top: 25px; background: rgba(15,23,42,0.7); padding: 20px; border-radius: 12px; }
+</style>
+
+<div class="media-wrapper">
+  <div class="media-card">
+    <h3 class="text-center mb-4">AI Media Summarizer</h3>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Select Media Type</label>
+        <select name="media_type" class="form-select" required>
+          <option value="">-- Choose --</option>
+          <option value="video">🎥 Video (YouTube URL)</option>
+          <option value="audio">🎧 Audio File</option>
+          <option value="image">🖼️ Image File</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <input type="text" name="video_url" class="form-control" placeholder="Paste YouTube Video URL (optional)">
+      </div>
+
+      <div class="mb-3">
+        <input type="file" name="file" class="form-control">
+      </div>
+
+      <div class="text-center">
+        <button class="btn-glow" type="submit">⚡ Summarize</button>
+      </div>
+    </form>
+
+    {% if summary %}
+    <div class="summary-box mt-4">
+      <h5>Summary:</h5>
+      <p>{{ summary | safe }}</p>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

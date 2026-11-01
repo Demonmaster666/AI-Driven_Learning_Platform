@@ -1,0 +1,143 @@
+body {
+  background-image: url("https://i.pinimg.com/originals/be/f0/5e/bef05e397070e9ef000065c27778656c.gif");
+  background-size: cover;
+  background-attachment: fixed;
+  color: #111;
+}
+.card { border-radius: 12px; }
+.bg-light-success {
+  background-color: #d1f7d1;
+}
+.bg-light-danger {
+  background-color: #ffd6d6;
+}
+.comments {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+}
+.comments .border {
+  background: white;
+}
+.user {
+  justify-content: flex-end;
+}
+
+.user .bubble {
+  background: #2563eb;
+  color: white;
+  border-bottom-right-radius: 4px;
+  margin-right: 10px;
+}
+
+.user .avatar {
+  order: 2;
+  margin-left: 10px;
+}
+
+.assistant {
+  justify-content: flex-start;
+}
+
+.assistant .avatar {
+  order: 1;
+  margin-right: 10px;
+}
+
+.assistant .bubble {
+  background: #334155;
+  color: #f1f5f9;
+  border-bottom-left-radius: 4px;
+}
+.message {
+  display: flex;
+  align-items: flex-end;
+  margin: 8px 0;
+}
+.speak-btn {
+  display: block;
+  margin-top: 6px;
+  background: none;
+  border: none;
+  color: #93c5fd;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.speak-btn:hover {
+  color: #60a5fa;
+}
+.speak-btn {
+  transition: background 0.2s, color 0.2s;
+}
+
+.speak-btn:active {
+  transform: scale(0.95);
+}
+.speaking-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #38bdf8;
+  margin-left: 8px;
+  animation: pulse 1s infinite;
+  vertical-align: middle;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.session-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 10px;
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.new-chat-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: 0.2s;
+}
+
+.new-chat-btn:hover {
+  background: #2563eb;
+}
+
+.session-link {
+  color: #cbd5e1;
+  padding: 8px 10px;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  transition: 0.2s;
+}
+
+.session-link:hover,
+.session-link.active {
+  background: #2563eb;
+  color: white;
+}
+.navbar-brand img {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar-brand img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(59,130,246,0.5);
+}

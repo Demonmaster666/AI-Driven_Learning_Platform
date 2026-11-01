@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f172a, #1e293b);
+    color: #f8fafc;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .book-wrapper {
+    max-width: 1100px;
+    margin: 40px auto;
+    text-align: center;
+  }
+
+  .search-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+
+  .search-bar input {
+    width: 400px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background-color: rgba(30,41,59,0.9);
+    color: #f8fafc;
+  }
+
+  .btn-glow {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(59,130,246,0.4);
+  }
+
+  .btn-glow:hover {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    box-shadow: 0 0 20px rgba(59,130,246,0.6);
+    transform: scale(1.05);
+  }
+
+  .genre-bar {
+    margin-bottom: 30px;
+  }
+
+  .genre-btn {
+    display: inline-block;
+    background: rgba(37,99,235,0.2);
+    color: #93c5fd;
+    border: 1px solid #3b82f6;
+    border-radius: 20px;
+    padding: 6px 15px;
+    margin: 4px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .genre-btn:hover {
+    background: #2563eb;
+    color: white;
+  }
+
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+  }
+
+  .book-card {
+    background: rgba(30,41,59,0.9);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+  }
+
+  .book-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(59,130,246,0.4);
+  }
+
+  .book-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .book-card h5 {
+    color: #93c5fd;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .book-card p {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    height: 60px;
+    overflow: hidden;
+  }
+
+  .rating {
+    color: #fbbf24;
+    font-size: 0.9rem;
+  }
+</style>
+
+<div class="book-wrapper">
+  <h2>Discover Books</h2>
+  <p>Search by name or explore by category</p>
+
+  <form method="post" class="search-bar">
+    <input type="text" name="query" placeholder="Search for a book or author..." value="{{ query }}">
+    <button class="btn-glow">🔍 Search</button>
+  </form>
+
+  <div class="genre-bar">
+    {% for g in genres %}
+      <a href="{{ url_for('books', genre=g) }}" class="genre-btn">{{ g }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="book-grid">
+    {% for b in books %}
+    <div class="book-card">
+      {% if b.thumbnail %}
+      <img src="{{ b.thumbnail }}" alt="Book cover">
+      {% endif %}
+      <h5>{{ b.title }}</h5>
+      <p><small>By {{ b.authors }}</small></p>
+      <p class="rating">⭐ {{ b.rating }}</p>
+      <p>{{ b.description[:120] }}...</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

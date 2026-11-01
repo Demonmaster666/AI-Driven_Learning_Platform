@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f172a, #1e293b);
+    color: #f8fafc;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-top: 10px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #60a5fa;
+    text-shadow: 0 0 10px rgba(96,165,250,0.3);
+  }
+
+  .dashboard-header p {
+    font-size: 1.1rem;
+    color: #cbd5e1;
+  }
+
+  /* GRID */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* 🔹 Exactly 3 columns */
+    gap: 30px;                              /* spacing between tiles */
+    justify-items: center;
+    align-items: stretch;
+    padding: 20px;
+  }
+
+  .tile-card {
+    width: 100%;
+    max-width: 320px;                        /* keeps cards same size */
+    background: rgba(30,41,59,0.95);
+    border-radius: 18px;
+    padding: 25px;
+    text-align: center;
+    color: #f8fafc;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    transition: all 0.3s ease, transform 0.1s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+
+  .tile-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(147,197,253,0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* ✅ Prevent overlay from blocking clicks */
+  }
+
+  .tile-card:hover::before {
+    opacity: 1;
+  }
+
+  .tile-card:hover {
+    box-shadow: 0 15px 35px rgba(37,99,235,0.3);
+    transform: translateY(-10px) scale(1.03);
+  }
+
+  /* Text & Links */
+  .tile-card h5 {
+    font-size: 1.4rem;
+    color: #93c5fd;
+    margin-bottom: 12px;
+  }
+
+  .tile-card p {
+    color: #cbd5e1;
+    margin-bottom: 18px;
+  }
+
+  .tile-card a {
+    display: inline-block;
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 22px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    position: relative;
+    z-index: 2; /* ✅ Keeps links clickable above overlay */
+  }
+
+  .tile-card a:hover {
+    background-color: #3b82f6;
+  }
+
+  /* Disable the floating animation during tilt */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @media (max-width: 992px) {
+    .card-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .card-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  .tile-card:hover:not(.tilting) {
+    animation: float 3s ease-in-out infinite;
+  }
+</style> 
+
+<div class="dashboard-header">
+  <h1>AI-Driven Content Platform</h1>
+  <p>Elevating Education Through AI</p>
+  <p>Welcome, <strong>{{ username }}</strong> | Role: <strong>{{ role }}</strong></p>
+</div>
+
+<div class="card-grid">
+  <div class="tile-card" data-tilt>
+    <h5>👤 Profile</h5>
+    <p>View and manage your personal details.</p>
+    <a href="{{ url_for('profile') }}">Open</a>
+  </div>
+
+  <div class="tile-card" data-tilt>
+    <h5>🤖 EduLink</h5>
+    <p>Chat with AI for study help, explanations, and summaries.</p>
+    <a href="{{ url_for('edulink') }}">Open Chat</a>
+  </div>
+
+  <div class="tile-card" data-tilt>
+    <h5>🧠 Quiz</h5>
+    <p>Test your knowledge with smart AI-generated quizzes.</p>
+    <a href="{{ url_for('quiz') }}">Start Quiz</a>
+  </div>
+
+  <div class="tile-card" data-tilt>
+    <h5>🌐 Community</h5>
+    <p>Join discussions, post questions, and connect with others.</p>
+    <a href="{{ url_for('forum') }}">Visit Forum</a>
+  </div>
+  <div class="tile-card" data-tilt>
+    <h5>📚 Book Explorer</h5>
+    <p>Find and explore books by name, genre, or trending topics.</p>
+    <a href="{{ url_for('books') }}">Explore</a>
+  </div>
+  <div class="tile-card" data-tilt>
+    <h5>📝 Media Summarizer</h5>
+    <p>Summarize Any video, audio or images.</p>
+    <a href="{{ url_for('media_summarizer') }}">Get</a>
+  </div>
+
+</div>
+
+<!-- JS: 3D Tilt Effect -->
+<script>
+document.querySelectorAll(".tile-card").forEach(card => {
+  card.addEventListener("mousemove", e => {
+    card.classList.add("tilting");
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rotateX = ((y - rect.height / 2) / 20);
+    const rotateY = ((rect.width / 2 - x) / 20);
+    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+  });
+
+  card.addEventListener("mouseleave", () => {
+    card.classList.remove("tilting");
+    card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+  });
+
+  // ✅ Make the entire card clickable when user clicks anywhere
+  card.addEventListener("click", e => {
+    const link = card.querySelector("a");
+    if (link && !e.target.closest("a")) {
+      link.click();
+    }
+  });
+});
+</script>
+{% endblock %}

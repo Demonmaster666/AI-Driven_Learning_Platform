@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    background: radial-gradient(circle at top left, #0f172a, #1e293b);
+    color: #f8fafc;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .forum-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+
+  .forum-card {
+    background: rgba(30,41,59,0.9);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .forum-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(147,197,253,0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .forum-card:hover::before {
+    opacity: 1;
+  }
+
+  .forum-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(37,99,235,0.3);
+  }
+
+  .forum-card h3 {
+    text-align: center;
+    color: #60a5fa;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-shadow: 0 0 8px rgba(96,165,250,0.3);
+  }
+
+  .form-control, textarea {
+    background-color: rgba(15, 23, 42, 0.9);
+    border: 1px solid #334155;
+    color: #f1f5f9;
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .form-control:focus, textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 8px rgba(59,130,246,0.4);
+    outline: none;
+  }
+
+  .btn-glow {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(59,130,246,0.4);
+  }
+
+  .btn-glow:hover {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    box-shadow: 0 0 20px rgba(59,130,246,0.6);
+    transform: scale(1.05);
+  }
+
+  hr {
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .post {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+
+  .post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(37,99,235,0.25);
+  }
+
+  .post h5 {
+    color: #93c5fd;
+    font-weight: 600;
+  }
+
+  .post p {
+    color: #e2e8f0;
+  }
+
+  .comment-box, .reply-box {
+    background: rgba(30,41,59,0.7);
+    border-left: 3px solid #2563eb;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .comment-box strong {
+    color: #93c5fd;
+  }
+
+  .comment-form input, .comment-form textarea {
+    margin-bottom: 8px;
+  }
+
+  .nested-reply {
+    margin-left: 25px;
+    border-left: 2px solid rgba(59,130,246,0.3);
+    padding-left: 10px;
+  }
+</style>
+
+<div class="forum-wrapper">
+  <div class="forum-card">
+    <h3>Community Forum</h3>
+
+    <!-- New Post Form -->
+    <form method="post" class="mb-4">
+      <input class="form-control mb-2" name="title" placeholder="Post title" required>
+      <textarea class="form-control mb-2" name="content" placeholder="Write your message..." required></textarea>
+      <button class="btn-glow">📢 Post</button>
+    </form>
+
+    <hr>
+
+    <!-- Posts Loop -->
+    {% for post in posts %}
+    <div class="post">
+      <h5>{{ post.title }}</h5>
+      <p>{{ post.content }}</p>
+      <p><small>👤 {{ post.author }} | ❤️ Likes: {{ post.likes or 0 }}</small></p>
+
+      <!-- Like Button -->
+      <form method="post" action="{{ url_for('forum_like', post_id=post.id) }}" class="mb-3">
+        <button class="btn-glow btn-sm">👍 Like</button>
+      </form>
+
+      <!-- Comments Section -->
+      <div class="comments">
+        <h6>💬 Comments:</h6>
+
+        {% for c in post.comments %}
+          {% if not c.parent_id %}
+          <div class="comment-box">
+            <p><strong>{{ c.author }}</strong>: {{ c.text }}</p>
+
+            <!-- Reply Form -->
+            <form method="post" class="comment-form">
+              <input type="hidden" name="post_id" value="{{ post.id }}">
+              <input type="hidden" name="parent_id" value="{{ c.id }}">
+              <input type="text" name="comment" placeholder="Reply..." class="form-control form-control-sm" required>
+              <button class="btn-glow btn-sm mt-1">↩️ Reply</button>
+            </form>
+
+            <!-- Nested Replies -->
+            {% for r in post.comments %}
+              {% if r.parent_id == c.id %}
+              <div class="nested-reply">
+                <div class="reply-box">
+                  <p><strong>{{ r.author }}</strong> ↪ {{ r.text }}</p>
+                </div>
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
+        {% endfor %}
+
+        <!-- Add new comment -->
+        <form method="post" class="comment-form mt-3">
+          <input type="hidden" name="post_id" value="{{ post.id }}">
+          <input type="text" name="comment" placeholder="Add a comment..." class="form-control mb-2" required>
+          <button class="btn-glow btn-sm">💬 Comment</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+      <p class="text-center text-secondary mt-4">No posts yet. Be the first to start a discussion! 🚀</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
